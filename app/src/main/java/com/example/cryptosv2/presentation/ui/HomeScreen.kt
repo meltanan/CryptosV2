@@ -3,18 +3,28 @@ package com.example.cryptosv2.presentation.ui
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -36,12 +46,29 @@ fun HomeScreen(
 
             Column (
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.background)
+                    .background(color = Color.Black.copy(alpha = .8f))
+                    //.background(MaterialTheme.colorScheme.background)
                     .fillMaxWidth()
                     .padding(vertical = 12.dp, horizontal = 16.dp)
             ){
+                //if (crypto.is_new) {
+                    Box(modifier = Modifier.clip(RoundedCornerShape(20.dp))
+                        .height(22.dp).width(42.dp).background(Color.Red)
+                        ) {
+                        Text(" New", color = Color.White)
+                    }
+                //}
 
-                Text(crypto.name)
+                Spacer(modifier = Modifier.height(10.dp))
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text("${crypto.symbol} | ${crypto.name}", color = Color.White, style = TextStyle(fontWeight = FontWeight.Bold))
+                    if (crypto.is_active)
+                        Text("Active", color = Color.Green)
+                    else
+                        Text("Not Active", color = Color.Red)
+                }
+                Text("Rank ${crypto.rank}", color = Color.White)
+
             }
         }
     }
@@ -49,7 +76,7 @@ fun HomeScreen(
     @Composable
     fun SetupUi(cryptos: List<Crypto>) {
 
-        LazyColumn () {
+        LazyColumn (modifier = Modifier.background(Color.Black).padding(top = 15.dp)) {
             items(cryptos) { crypto ->
 
                 CryptoCard(crypto)

@@ -29,18 +29,59 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     suspend fun getCryptos() {
-        when (val response = cryptoRepo.getAllCryptosData()) {
-            is Resource.Success -> {
-                response.data?.let {
-                    _cryptos.emit(UiState.Loaded(it))
-                } ?: run {
-                    _cryptos.emit(UiState.Error(response.uiErrorMessage))
-                }
-            }
 
-            else -> {
-                _cryptos.emit(UiState.Error(response.uiErrorMessage))
-            }
-        }
+        val list = listOf<Crypto>(
+            Crypto(
+                id = "1",
+                name = "Bit Coint",
+                symbol = "BTC",
+                rank = 1,
+                is_new = true,
+                is_active = true,
+                type = "coin"
+            ),
+            Crypto(
+                id = "1",
+                name = "Bit Coint",
+                symbol = "BTC",
+                rank = 1,
+                is_new = true,
+                is_active = true,
+                type = "coin"
+            ),
+                    Crypto(
+                    id = "1",
+            name = "Bit Coint",
+            symbol = "BTC",
+            rank = 1,
+            is_new = false,
+            is_active = false,
+            type = "coin"
+        ),
+        Crypto(
+            id = "1",
+            name = "Bit Coint",
+            symbol = "BTC",
+            rank = 1,
+            is_new = true,
+            is_active = true,
+            type = "coin"
+        )
+        )
+
+        _cryptos.emit(UiState.Loaded(list))
+//        when (val response = cryptoRepo.getAllCryptosData()) {
+//            is Resource.Success -> {
+//                response.data?.let {
+//                    _cryptos.emit(UiState.Loaded(it))
+//                } ?: run {
+//                    _cryptos.emit(UiState.Error(response.uiErrorMessage))
+//                }
+//            }
+//
+//            else -> {
+//                _cryptos.emit(UiState.Error(response.uiErrorMessage))
+//            }
+//        }
     }
 }
