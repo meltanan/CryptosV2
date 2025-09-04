@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.cryptosv2.common.SearchComponent
 import com.example.cryptosv2.common.ShowProgressIndicator
 import com.example.cryptosv2.data.util.UiState
 import com.example.cryptosv2.domain.model.Crypto
@@ -76,14 +78,21 @@ fun HomeScreen(
     @Composable
     fun SetupUi(cryptos: List<Crypto>) {
 
-        LazyColumn (modifier = Modifier.background(Color.Black).padding(top = 15.dp)) {
-            items(cryptos) { crypto ->
 
-                CryptoCard(crypto)
+        Column {
+            SearchComponent() { }
+            LazyColumn (modifier = Modifier.background(Color.Black).padding(top = 5.dp)) {
+                items(cryptos) { crypto ->
 
+                    CryptoCard(crypto)
+
+                }
             }
         }
+
     }
+
+    Box(modifier = Modifier.background(color = Color.Black).fillMaxSize())
 
     when (cryptos) {
         is UiState.Loading -> {
