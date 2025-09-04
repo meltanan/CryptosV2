@@ -10,6 +10,7 @@ import com.example.cryptosv2.domain.model.Crypto
 import com.example.cryptosv2.domain.repository.CryptoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import okhttp3.Response
 import javax.inject.Inject
@@ -19,6 +20,7 @@ class HomeScreenViewModel @Inject constructor(
     val cryptoRepo: CryptoRepository):
     ViewModel() {
 
+    private var cryptosList: MutableList<Crypto> = mutableListOf()
     private val _cryptos = MutableStateFlow<UiState<List<Crypto>>>(UiState.Loading())
     val cryptos = _cryptos
 
@@ -69,19 +71,27 @@ class HomeScreenViewModel @Inject constructor(
         )
         )
 
-        _cryptos.emit(UiState.Loaded(list))
-//        when (val response = cryptoRepo.getAllCryptosData()) {
-//            is Resource.Success -> {
-//                response.data?.let {
-//                    _cryptos.emit(UiState.Loaded(it))
-//                } ?: run {
-//                    _cryptos.emit(UiState.Error(response.uiErrorMessage))
-//                }
-//            }
-//
-//            else -> {
-//                _cryptos.emit(UiState.Error(response.uiErrorMessage))
-//            }
-//        }
+        cryptosList = list as MutableList
+        //_cryptos.emit(UiState.Loaded(list))
+        when (val response = cryptoRepo.getAllCryptosData()) {
+            is Resource.Success -> {
+                response.data?.let {
+                    _cryptos.emit(UiState.Loaded(it))
+                } ?: run {
+                    _cryptos.emit(UiState.Error(response.uiErrorMessage))
+                }
+            }
+
+            else -> {
+                _cryptos.emit(UiState.Error(response.uiErrorMessage))
+            }
+        }
+    }
+
+    fun searchCryptos(text: String) {
+        val filteredCryptos = cryptosList.filter { it.name.contains(text) }
+
+        _cryptos.update {UiState.Loaded(filteredCryptos)}
+
     }
 }

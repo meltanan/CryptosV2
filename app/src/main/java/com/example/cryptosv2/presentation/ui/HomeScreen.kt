@@ -17,13 +17,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -54,8 +56,11 @@ fun HomeScreen(
                     .padding(vertical = 12.dp, horizontal = 16.dp)
             ){
                 //if (crypto.is_new) {
-                    Box(modifier = Modifier.clip(RoundedCornerShape(20.dp))
-                        .height(22.dp).width(42.dp).background(Color.Red)
+                    Box(modifier = Modifier
+                        .clip(RoundedCornerShape(20.dp))
+                        .height(22.dp)
+                        .width(42.dp)
+                        .background(Color.Red)
                         ) {
                         Text(" New", color = Color.White)
                     }
@@ -78,10 +83,22 @@ fun HomeScreen(
     @Composable
     fun SetupUi(cryptos: List<Crypto>) {
 
+        var doSearch by remember() { mutableStateOf(false) }
+        var searchText by remember { mutableStateOf("") }
+
+        if (doSearch) {
+            doSearch = false
+            viewModel.searchCryptos(searchText)
+        }
 
         Column {
-            SearchComponent() { }
-            LazyColumn (modifier = Modifier.background(Color.Black).padding(top = 5.dp)) {
+            SearchComponent {
+                searchText = it
+                doSearch = true
+            }
+            LazyColumn (modifier = Modifier
+                .background(Color.Black)
+                .padding(top = 5.dp)) {
                 items(cryptos) { crypto ->
 
                     CryptoCard(crypto)
@@ -92,7 +109,9 @@ fun HomeScreen(
 
     }
 
-    Box(modifier = Modifier.background(color = Color.Black).fillMaxSize())
+    Box(modifier = Modifier
+        .background(color = Color.Black)
+        .fillMaxSize())
 
     when (cryptos) {
         is UiState.Loading -> {
